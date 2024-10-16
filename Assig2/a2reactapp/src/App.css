@@ -2,6 +2,38 @@
   text-align: center;
 }
 
+body{
+    background-color: aliceblue;
+}
+
+
+.navbar {
+    background:lightblue;
+    font-size:x-large;
+    font-style:oblique;
+    width: 3000px;
+    margin-left: -330px;
+    margin-bottom:50px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size:xx-large;
+}
+
+.nav-link:hover {
+    background-color: lightsteelblue;
+    text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
