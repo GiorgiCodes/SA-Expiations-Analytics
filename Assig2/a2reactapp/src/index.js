@@ -3,11 +3,26 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Privacy from './routes/Privacy';
+import About from './routes/About';
+import Home from './routes/Home';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+        <BrowserRouter>
+
+            <Routes>
+                <Route path="/" element={<App />}>
+                    <Route path="Home" element={<Home />} />
+                    <Route path="Privacy" element={<Privacy />} />
+                    <Route path="About" element={<About />} />                   
+                    <Route path="" element={<Home />} /> {/**route when URL is localhost: [port] */}
+                    <Route path="*" element={<Home />} />{/**route matches anything */}
+                </Route>
+            </Routes>
+        </BrowserRouter>
   </React.StrictMode>
 );
 
