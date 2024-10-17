@@ -10,9 +10,7 @@ body{
 .navbar {
     background:lightblue;
     font-size:x-large;
-    font-style:oblique;
-    width: 3000px;
-    margin-left: -330px;
+    font-style:oblique;   
     margin-bottom:50px;
 }
 
