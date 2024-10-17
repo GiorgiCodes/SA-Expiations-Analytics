@@ -18,7 +18,8 @@ function App() {
                             <Link className="nav-link active" to="/Home">Home</Link>
                             <Link className="nav-link active" to="/About">About</Link>
                             <Link className="nav-link active" to="/Privacy">Privacy</Link>
-                        </div>
+                            <Link className="nav-link active" to="/Login">Login</Link>
+                        </div>                       
                     </div>
                 </div>
             </nav>
