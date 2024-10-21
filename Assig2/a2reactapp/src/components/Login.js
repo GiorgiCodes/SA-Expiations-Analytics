@@ -1,12 +1,15 @@
 ﻿import React, { useEffect, useState } from 'react';
 import SHA256 from 'crypto-js/sha256';
+import { useNavigate } from 'react-router-dom';
+import "./Login.css"
+ import { FaLock, FaUser } from "react-icons/fa";
 
 
 
 function Login() {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+    const navigate = useNavigate();
     function onSubmit(e) {
         e.preventDefault();
 
@@ -35,9 +38,11 @@ function Login() {
         fetch(request)
             .then(response => response.json())
             .then(data => {
+                console.log(data); // Check the response here
                 if (data==true) {
                     setIsLoggedIn(true);
-                    alert("Login successful");
+                    //alert("Login successful");
+                    navigate("/Home");
                 } else {
                     alert("Login failed");
                 }
@@ -47,21 +52,38 @@ function Login() {
     }
 
     return (
-        <form onSubmit={onSubmit} className="row justify-content-start mb-3">
-            <div className="row">
-                <div className="col-3">
-                    <input type="text" name="userName" className="form-control"
-                        placeholder="Enter username" />
+        <div className="wrapper">
+            <form onSubmit={onSubmit}>
+                <h1>Login</h1>
+
+                <div className="input-box">
+                    <input type="text" name="userName"
+                        placeholder="Enter username" required />
+                    <FaUser className="icon" />
                 </div>
-                <div className="col-3">
+
+                <div className="input-box">
                     <input type="password" name="password"
-                        className="form-control" placeholder="Enter password" />
+                        placeholder="Enter password" required />
+                    <FaLock className="icon" />
                 </div>
+
+                <div>
+                    <label>
+                        <input type="checkbox" />Remember
+                        <a href="#">Forgot password</a>
+                    </label>
+                </div>
+
                 <div className="col-auto">
-                    <button type="submit" className="form-control btn btn-primary">Login</button>
+                    <button type="submit">Login</button>
                 </div>
-            </div>
-        </form>
+
+                <div className="register-link">
+                    <p>Don't have an account? <a href="#">Register</a></p>
+                </div>
+            </form>
+        </div>
     )
 }
 

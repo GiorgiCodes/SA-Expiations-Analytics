@@ -1,0 +1,21 @@
+﻿.wrapper {
+    margin: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    color: green;
+    width:420px;
+    background:skyblue;
+}
+
+.wrapper h1{
+    font-size:36px;
+    text-align:center;
+    padding: 10px;
+}
+
+.wrapper .input-box{
+    display:d-flex;
+    color:red;
+
+
+}
