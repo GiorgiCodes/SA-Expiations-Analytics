@@ -2,7 +2,7 @@
 import SHA256 from 'crypto-js/sha256';
 import { useNavigate } from 'react-router-dom';
 import "./Login.css"
- import { FaLock, FaUser } from "react-icons/fa";
+import { FaLock, FaUser } from "react-icons/fa";
 
 
 
@@ -39,7 +39,7 @@ function Login() {
             .then(response => response.json())
             .then(data => {
                 console.log(data); // Check the response here
-                if (data==true) {
+                if (data == true) {
                     setIsLoggedIn(true);
                     //alert("Login successful");
                     navigate("/Home");
@@ -68,16 +68,13 @@ function Login() {
                     <FaLock className="icon" />
                 </div>
 
-                <div>
+                <div className="remember-forgot">
                     <label>
-                        <input type="checkbox" />Remember
-                        <a href="#">Forgot password</a>
-                    </label>
+                        <input type="checkbox" />Remember </label>
+                    <a href="#">Forgot password</a>
                 </div>
 
-                <div className="col-auto">
-                    <button type="submit">Login</button>
-                </div>
+                <button type="submit">Login</button>
 
                 <div className="register-link">
                     <p>Don't have an account? <a href="#">Register</a></p>
