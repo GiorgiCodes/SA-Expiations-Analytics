@@ -24,6 +24,23 @@ body{
     text-decoration: underline;
 }
 
+.navbar-text {
+    font-size: 20px;
+    margin-top: 40px !important;
+}
+
+.icon{
+    color:green;
+    font-size:35px;
+    
+}
+
+button {
+    font-style: italic;
+    font-weight: 600 !important;
+    font-size: 20px !important;
+}
+
 
 
 

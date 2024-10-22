@@ -51,7 +51,6 @@ function Login() {
         fetch(request)
             .then(response => response.json())
             .then(data => {
-                console.log(data); // Check the response here
                 if (data == true) {
                     setIsLoggedIn(true);
                     setUser(userName);
@@ -82,10 +81,8 @@ function Login() {
         fetch(request)
             .then(response => response.json())
             .then(data => {
-                console.log(data); // Check the response here
                 if (data == true) {
-                    setIsRegistering(true);  
-                    alert("Successfully registered")
+                    setUser(userName);
                     navigate("/Home");
                 } else {
                     alert("Cannot register, userName already exists");
@@ -98,7 +95,7 @@ function Login() {
     return (
         <div className="wrapper">
             <form onSubmit={onSubmit}>
-                <h1>{ isRegistering ? "Please Register" : "Please Login"}</h1>
+                <h1>{isRegistering ? "Register" : "Login"}</h1>
 
                 <div className="input-box">
                     <input type="text" name="userName"
@@ -118,10 +115,13 @@ function Login() {
                     <a href="#">Forgot password</a>
                 </div>
 
-                <button type="submit">Login</button>
+                <button type="submit">Submit</button>
 
                 <div className="register-link">
-                    <p>Don't have an account? <a href="#" onClick={() => setIsRegistering(true) }>Register</a></p>
+                    {isRegistering ? (<p><a href="#" onClick={() => setIsRegistering(false)}>Login</a></p>)
+                        : (<p>Don't have an account? <a href="#" onClick={() => setIsRegistering(true)}>Register</a></p>)
+                    }
+
                 </div>
             </form>
         </div>
