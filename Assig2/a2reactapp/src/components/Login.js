@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from 'react';
 import SHA256 from 'crypto-js/sha256';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import "./Login.css"
 import { FaLock, FaUser } from "react-icons/fa";
 
@@ -10,6 +10,7 @@ function Login() {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
+    const { setUser } = useOutletContext();
     function onSubmit(e) {
         e.preventDefault();
 
@@ -41,7 +42,9 @@ function Login() {
                 console.log(data); // Check the response here
                 if (data == true) {
                     setIsLoggedIn(true);
-                    //alert("Login successful");
+                    setUser(userName);
+                   
+                    //After successful Login redirects to the Home pagehttps://reactrouter.com/en/main/hooks/use-navigate 
                     navigate("/Home");
                 } else {
                     alert("Login failed");
@@ -52,9 +55,9 @@ function Login() {
     }
 
     return (
-        <div className="wrapper">
+        <div className="wrapper">   
             <form onSubmit={onSubmit}>
-                <h1>Login</h1>
+                <h1>Please Login</h1>
 
                 <div className="input-box">
                     <input type="text" name="userName"

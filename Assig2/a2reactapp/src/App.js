@@ -4,7 +4,15 @@ import React, { useState } from 'react';
 import SHA256 from 'crypto-js/sha256';
 import { Link, Outlet } from "react-router-dom";
 
+/** After login set greeting with userName. To achieve this use useOutletContext(in Login page) and outlet context
+ * Ref: https://medium.com/@bobjunior542/react-router-6-advanced-routing-with-useoutlet-and-useoutletcontext-2cfca328b7ac
+ * https://medium.com/@jasen.miyamoto/learning-react-usecontext-and-useoutletcontext-abab8fa266bb
+ * 
+ */
+
 function App() {
+    const [user, setUser] = useState(null);
+
     return (
         <div className="App">
             <nav className="navbar navbar-expand-lg p-4">
@@ -18,12 +26,25 @@ function App() {
                             <Link className="nav-link active" to="/Home">Home</Link>
                             <Link className="nav-link active" to="/About">About</Link>
                             <Link className="nav-link active" to="/Privacy">Privacy</Link>
-                            <Link className="nav-link active" to="/Login">Login</Link>
-                        </div>                       
+                           
+                        </div>
+                        <ul className="navbar-nav">
+                            <li className="nav-item">
+                                <Link className="nav-link active" aria-current="page" to="/RegionList">Regions</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="CountryList/0">Countries</Link>
+                            </li>
+                        </ul>
                     </div>
+                    {user ? (
+                        <span className="navbar-text">Welcome back, {user} </span>
+                    ) : (
+                        <Link className="nav-link active" to="/Login">Login</Link>
+                    )}
                 </div>
             </nav>
-            <Outlet />            
+            <Outlet context={{setUser} } />            
         </div>
 
     );
