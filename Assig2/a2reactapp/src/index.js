@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Privacy from './routes/Privacy';
 import About from './routes/About';
 import Home from './routes/Home';
+import Dashboard from './routes/Dashboard';
 import Login from './components/Login';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -18,10 +19,11 @@ root.render(
                 <Route path="/" element={<App />}>
                     <Route path="Home" element={<Home />} />
                     <Route path="Privacy" element={<Privacy />} />
-                    <Route path="About" element={<About />} />                      
+                    <Route path="About" element={<About />} />            
+                    <Route path="Dashboard" element={<Dashboard />} /> 
                     <Route path="" element={<Home />} /> {/**route when URL is localhost: [port] */}
                     <Route path="*" element={<Home />} />{/**route matches anything */}
-                    <Route path="/Login" element={<Login />} />
+                    <Route path="/Login" element={<Login />} />                   
                 </Route>
             </Routes>
         </BrowserRouter>
