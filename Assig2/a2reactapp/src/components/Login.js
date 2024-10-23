@@ -95,7 +95,7 @@ function Login() {
     return (
         <div className="wrapper">
             <form onSubmit={onSubmit}>
-                <h1>{isRegistering ? "Register" : "Login"}</h1>
+                <h1>{isRegistering ? "Register" : "Sign in"}</h1>
 
                 <div className="input-box">
                     <input type="text" name="userName"
@@ -118,7 +118,7 @@ function Login() {
                 <button type="submit">Submit</button>
 
                 <div className="register-link">
-                    {isRegistering ? (<p><a href="#" onClick={() => setIsRegistering(false)}>Login</a></p>)
+                    {isRegistering ? (<p><a href="#" onClick={() => setIsRegistering(false)}>Sign in</a></p>)
                         : (<p>Don't have an account? <a href="#" onClick={() => setIsRegistering(true)}>Register</a></p>)
                     }
 

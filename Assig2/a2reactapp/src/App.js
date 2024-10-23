@@ -5,9 +5,9 @@ import SHA256 from 'crypto-js/sha256';
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 
-/** After login set greeting with userName. To achieve this use useOutletContext(in Login page) and outlet context
+/** After login set greeting with userName. To achieve this use useOutletContext(in Login page) to access data and outlet context to pass data to child
  * Ref: https://medium.com/@bobjunior542/react-router-6-advanced-routing-with-useoutlet-and-useoutletcontext-2cfca328b7ac
- * https://medium.com/@jasen.miyamoto/learning-react-usecontext-and-useoutletcontext-abab8fa266bb
+ *      https://medium.com/@jasen.miyamoto/learning-react-usecontext-and-useoutletcontext-abab8fa266bb
  * 
  */
 
@@ -15,9 +15,13 @@ function App() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
-    function logOut() {
+    function signOut() {
         setUser(null);
         navigate("./Login");
+    }
+
+    function signIn() {
+        navigate("./Login")
     }
 
     return (
@@ -30,7 +34,7 @@ function App() {
                     </button>
                     <div className="navbar-collapse" id="navbarNavAltMarkup">
                         <div className="navbar-nav">
-                            <Link className="nav-link active" to="/Home">Home</Link>
+                            <Link className="nav-link active" to="/Home">Home</Link>                            
                             <Link className="nav-link active" to="/About">About</Link>
                             <Link className="nav-link active" to="/Privacy">Privacy</Link>
                         </div>                   
@@ -40,16 +44,14 @@ function App() {
                             <div className="navbar-text">Hello, {user} </div>
                             <div className="row">
                                 <CgProfile className="icon" />
-                                <button className="btn btn-active" onClick={logOut}>Log Out</button>
+                                <button id="loginBtn" className="btn btn-active" onClick={signOut}>Sign Out</button>
                             </div >
-
-
                         </>
                     ) : (
                         <>
-                            <div className="me-5">
+                            <div className=" row">
                                 <CgProfile className="icon" />
-                                <Link className="nav-link active" to="/Login">Login</Link>
+                                    <button id="loginBtn" className="btn btn-active" onClick={signOut}>Sign in</button>
                             </div>
                         </>
                     )}
