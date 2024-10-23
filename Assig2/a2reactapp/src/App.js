@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, { useState } from 'react';
 import SHA256 from 'crypto-js/sha256';
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 
 /** After login set greeting with userName. To achieve this use useOutletContext(in Login page) to access data and outlet context to pass data to child
@@ -14,6 +14,8 @@ import { CgProfile } from "react-icons/cg";
 function App() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
+    const isActive = (path) => location.pathname === path ? 'active' : '';
 
     function signOut() {
         setUser(null);
@@ -34,10 +36,10 @@ function App() {
                     </button>
                     <div className="navbar-collapse" id="navbarNavAltMarkup">
                         <div className="navbar-nav">
-                            <Link className="nav-link active" to="/Home">Home</Link>
-                            <Link className="nav-link active" to="/Dashboard">Dashboard</Link>
-                            <Link className="nav-link active" to="/About">About</Link>
-                            <Link className="nav-link active" to="/Privacy">Privacy</Link>
+                            <Link className={`nav-link ${isActive("/Home")}`} to="/Home">Home</Link>
+                            <Link className={`nav-link ${isActive("/Dashboard")}`} to="/Dashboard">Dashboard</Link>
+                            <Link className={`nav-link ${isActive("/About")}`} to="/About">About</Link>
+                            <Link className={`nav-link ${isActive("/Privacy")}`} to="/Privacy">Privacy</Link>
                         </div>                   
                     </div>
                     {user ? (
