@@ -1,12 +1,13 @@
 ﻿import React from 'react';
-import SuburbList from '../components/SuburbList'; // Import the SuburbList component
+import SuburbList from '../components/SuburbList';
 
 function Dashboard() {
     return (
         <div>
-            <h1>Dashboard</h1>
+            <h2>Dashboard</h2>
             <div className="col-3">
-             <SuburbList /> {/* Display SuburbList in the dashboard */}
+                {/* Display SuburbList in the dashboard */}
+                <SuburbList />
 
             </div>
         </div>

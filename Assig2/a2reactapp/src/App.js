@@ -39,9 +39,9 @@ function App() {
                     <div className="navbar-collapse" id="navbarNavAltMarkup">
                         <div className="navbar-nav">
                             <Link className={`nav-link ${isActive("/Home")}`} to="/Home">Home</Link>
-                            <Link className={`nav-link ${isActive("/Dashboard")}`} to="/Dashboard">Dashboard</Link>
                             <Link className={`nav-link ${isActive("/About")}`} to="/About">About</Link>
                             <Link className={`nav-link ${isActive("/Privacy")}`} to="/Privacy">Privacy</Link>
+                            <Link className={`nav-link ${isActive("/Dashboard")}`} to="/Dashboard">Dashboard</Link>
                         </div>                   
                     </div>
                     {user ? (
@@ -62,6 +62,7 @@ function App() {
                     )}
                 </div>
             </nav>
+            {/*Share name of username globally with children*/}
             <Outlet context={{user, setUser }} />
         </div>
 

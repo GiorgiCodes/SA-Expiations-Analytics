@@ -18,6 +18,7 @@ root.render(
 
             <Routes>
                 <Route path="/" element={<App />}>
+                {/*wrap all the routes by AuthRoute to restrict accessing data without authorisation */}
                     <Route path="Home" element={<AuthRoute><Home /> </AuthRoute>} />
                     <Route path="Privacy" element={<AuthRoute><Privacy /></AuthRoute>} />
                     <Route path="About" element={<AuthRoute><About /></AuthRoute>} />
