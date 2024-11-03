@@ -1,34 +1,24 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState } from 'react';
 
-function SuburbList() {
-    const [suburbs, setSuburbs] = useState([]);
-    const [selectedSuburb, setSelectedSuburb] = useState("Select Suburb")
+function SuburbList({ suburbs }) {
 
-    const selectSuburb = (suburb) => {
-        setSelectedSuburb(suburb);
+    const [selectedSuburb, setSelectedSuburb] = useState()
+
+    const selectSuburb = (e) => {
+        setSelectedSuburb(e.target.value);
     }
 
-    useEffect(() => {
-        fetch("http://localhost:5147/api/Get_ListCameraSuburbs")
-            .then(response => response.json())
-            .then(data => setSuburbs(data))
-            .catch(err => {
-                console.log(err);
-            });
-    }, [])
-
     return (
-        <div className="dropdown">
-            <button className="btn btn-secondary dropdown-toggle col-6" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                {selectedSuburb}
-            </button>
-            <ul className="dropdown-menu p-2 overflow-auto" aria-labelledby="dropdownMenuButton" style={{ maxHeight: '400px' }}>
-            {/*enable to select suburb from suburblist */}
+        <div className="suburbList">
+            <select className="form-select overflow-auto" value={selectedSuburb} onChange={selectSuburb}>
+                {/*enable to select suburb from suburblist */}
+                <option>Select Suburb</option>
                 {suburbs.map((suburb, index) => (
-
-                    <li key={index}><a className="dropdown-item" href="#" onClick={() => selectSuburb(suburb)}>{suburb}</a></li>
+                    <option key={index} value={suburb}>
+                        {suburb}
+                    </option>
                 ))}
-            </ul>
+            </select>
         </div>
     );
 }
