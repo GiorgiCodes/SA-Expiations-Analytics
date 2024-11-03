@@ -6,6 +6,7 @@ function Dashboard() {
     const [suburbDetails, setSuburbDetails] = useState([]);
     const [selectedLocations, setSelectedLocations] = useState([]);
     const maxSelections = 2;
+    const [selectedSuburb, setSelectedSuburb] = useState("");
 
     useEffect(() => {
         fetch("http://localhost:5147/api/Get_ListCameraSuburbs")
@@ -16,9 +17,11 @@ function Dashboard() {
             });
     }, [])
 
-    const suburbSelect = (selectedSuburb) => {
-        if (selectedSuburb) {
-            fetch(`http://localhost:5147/api/Get_ListCamerasInSuburb?suburb=${selectedSuburb}&IdsOnly=false`)
+
+    const suburbSelect = (suburb) => {
+        setSelectedSuburb(suburb);
+        if (suburb) {
+            fetch(`http://localhost:5147/api/Get_ListCamerasInSuburb?suburb=${suburb}&IdsOnly=false`)
                 .then(response => response.json())
                 .then(data => setSuburbDetails(data))
                 .catch(err => console.log(err));
@@ -28,6 +31,11 @@ function Dashboard() {
         }
 
     };
+
+    useEffect(() => {
+        setSelectedLocations([]);
+    }, [selectedSuburb]);
+
 
     const isSelected = (index) => selectedLocations.includes(index);
 
@@ -50,7 +58,7 @@ function Dashboard() {
             }
         });
     };
-    
+
 
     return (
         <div>
@@ -91,7 +99,7 @@ function Dashboard() {
                     <tbody>
                         {suburbDetails.map((d, index) => (
                             <tr key={index}>
-                                <th><input className="form-check-input" type="checkbox" value="" checked={isSelected(index)} onChange={() => selectedLocationsChange(index)} disabled={!isSelected(index) && selectedLocations >= 2} /></th>
+                                <th><input className="form-check-input" type="checkbox" value="" checked={isSelected(index)} onChange={() => selectedLocationsChange(index)} disabled={!isSelected(index) && selectedLocations.length >= maxSelections} /></th>
                                 <td>{d.suburb}</td>
                                 <td>{d.cameraType1}</td>
                                 <td>{d.roadName}, {d.roadType}</td>
