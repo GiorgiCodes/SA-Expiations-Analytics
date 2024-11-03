@@ -1,11 +1,13 @@
 ﻿import React, { useState } from 'react';
 
-function SuburbList({ suburbs }) {
+function SuburbList({ suburbs, onSelectSuburb }) {
 
     const [selectedSuburb, setSelectedSuburb] = useState()
 
     const selectSuburb = (e) => {
-        setSelectedSuburb(e.target.value);
+        const suburb = e.target.value;
+        setSelectedSuburb(suburb);
+        onSelectSuburb(suburb);
     }
 
     return (

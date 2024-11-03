@@ -3,6 +3,7 @@ import SuburbList from '../components/SuburbList';
 
 function Dashboard() {
     const [suburbs, setSuburbs] = useState([]);
+    const [suburbDetails, setSuburbDetails] = useState([]);
 
     useEffect(() => {
         fetch("http://localhost:5147/api/Get_ListCameraSuburbs")
@@ -12,6 +13,19 @@ function Dashboard() {
                 console.log(err);
             });
     }, [])
+
+    const suburbSelect = (selectedSuburb) => {
+        if (selectedSuburb) {
+            fetch(`http://localhost:5147/api/Get_ListCamerasInSuburb?suburb=${selectedSuburb}&IdsOnly=false`)
+                .then(response => response.json())
+                .then(data => setSuburbDetails(data))
+                .catch(err => console.log(err));
+        }
+        else {
+            setSuburbDetails([]);
+        }
+
+    };
 
     return (
         <div>
@@ -24,7 +38,7 @@ function Dashboard() {
 
                 <div className="col-2">
                     {/* Display SuburbList in the dashboard */}
-                    <SuburbList suburbs={suburbs} />
+                    <SuburbList suburbs={suburbs} onSelectSuburb={suburbSelect} />
                 </div>
 
                 <div className="col-2">
@@ -36,30 +50,32 @@ function Dashboard() {
             </div>
 
             <div className="p-4">
-            <table className="table">
+                <table className="table">
 
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Suburb</th>
-                        <th>Camera Type</th>
-                        <th>Rd Name</th>
-                        <th>Offences</th>
-                        <th>Rejected Expiations</th>
-                        <th>Compliance Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th><input className="form-check-input" type="checkbox" value="" id="flexCheckChecked"  /></th>
-                        <td>Adelaide</td>
-                        <td>Mobile camera</td>
-                        <td>Pitt St</td>
-                        <td>1000</td>
-                        <td>10</td>
-                        <td>Warning</td>
-                    </tr>
-                </tbody>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Suburb</th>
+                            <th>Camera Type</th>
+                            <th>Rd Name</th>
+                            <th>Offences</th>
+                            <th>Rejected Expiations</th>
+                            <th>Compliance Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {suburbDetails.map((d, index) => (
+                            <tr key={index }>
+                                <th><input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" /></th>
+                                <td>{d.suburb}</td>
+                                <td>{d.cameraType1}</td>
+                                <td>{d.roadName}, {d.roadType}</td>
+                                <td>1000</td>
+                                <td>10</td>
+                                <td>Warning</td>
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>
             </div>
         </div>
