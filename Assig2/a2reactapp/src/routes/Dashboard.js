@@ -7,6 +7,11 @@ function Dashboard() {
     const [selectedLocations, setSelectedLocations] = useState([]);
     const maxSelections = 2;
     const [selectedSuburb, setSelectedSuburb] = useState("");
+    const [dateTo, setDateTo] = useState("");
+    const [dateFrom, setDateFrom] = useState("");
+    const [searchSpeeding, setSearchSpeeding] = useState("");
+    const [cameraTypes, setCameraTypes] = useState([]);
+
 
     useEffect(() => {
         fetch("http://localhost:5147/api/Get_ListCameraSuburbs")
@@ -18,18 +23,35 @@ function Dashboard() {
     }, [])
 
 
-    const suburbSelect = (suburb) => {
+    const suburbSelect = async (suburb) => {
         setSelectedSuburb(suburb);
         if (suburb) {
-            fetch(`http://localhost:5147/api/Get_ListCamerasInSuburb?suburb=${suburb}&IdsOnly=false`)
-                .then(response => response.json())
-                .then(data => setSuburbDetails(data))
-                .catch(err => console.log(err));
+            try {
+                //Fetch first suburb details 
+                const response1 = await fetch(`http://localhost:5147/api/Get_ListCamerasInSuburb?suburb=${suburb}&cameraIdsOnly=false`);
+                const suburbsData = await response1.json();
+                setSuburbDetails(suburbsData);
+
+                // Then fetch expiation Stats by the loc.ID and cam.typeCode,getting this details from first fetch 
+                const expSubPromises = suburbsData.map(async (detail) => {
+                    const { locationId, cameraTypeCode } = detail;
+                    const response2 = await fetch(`http://localhost:5147/api/Get_ExpiationStatsForLocationId?locationId=${locationId}&cameraTypeCode=${cameraTypeCode}&startTime=0&endTime=2147483647`)
+                    const expiationStats = await response2.json();
+                    // Merge fetched data from response1 and response2
+                    return { ...detail, expiationStats };
+                });
+
+                // wait for data fetches and then update sub with details with expiation stats 
+                const updateLocationDetails = await Promise.all(expSubPromises);
+                setSuburbDetails(updateLocationDetails);
+            } catch (err) {
+                console.log(err);
+            };
+
         }
         else {
             setSuburbDetails([]);
         }
-
     };
 
     useEffect(() => {
@@ -87,7 +109,8 @@ function Dashboard() {
 
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th></th>
+                            <th>Location ID</th>
                             <th>Suburb</th>
                             <th>Camera Type</th>
                             <th>Rd Name</th>
@@ -99,11 +122,18 @@ function Dashboard() {
                     <tbody>
                         {suburbDetails.map((d, index) => (
                             <tr key={index}>
-                                <th><input className="form-check-input" type="checkbox" value="" checked={isSelected(index)} onChange={() => selectedLocationsChange(index)} disabled={!isSelected(index) && selectedLocations.length >= maxSelections} /></th>
+                                <th>
+                                    <input className="form-check-input"
+                                        type="checkbox" value=""
+                                        checked={isSelected(index)}
+                                        onChange={() => selectedLocationsChange(index)}
+                                        disabled={!isSelected(index) && selectedLocations.length >= maxSelections} />
+                                </th>
+                                <td>{d.locationId}</td>
                                 <td>{d.suburb}</td>
                                 <td>{d.cameraType1}</td>
                                 <td>{d.roadName}, {d.roadType}</td>
-                                <td>1000</td>
+                                <td>{d.expiationStats?.totalOffencesCount || "N/A"}</td>
                                 <td>10</td>
                                 <td>Warning</td>
                             </tr>
