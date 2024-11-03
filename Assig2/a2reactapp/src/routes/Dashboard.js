@@ -23,6 +23,12 @@ function Dashboard() {
     }, [])
 
 
+    /**
+     * Ref for promises and nested fetches
+     * https://javascript.info/async
+     * https://www.pluralsight.com/resources/blog/guides/handling-nested-http-requests-using-the-fetch-api
+     * https://rapidapi.com/guides/loading-state-react
+     */
     const suburbSelect = async (suburb) => {
         setSelectedSuburb(suburb);
         if (suburb) {
