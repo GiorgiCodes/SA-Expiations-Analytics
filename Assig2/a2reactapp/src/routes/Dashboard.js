@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import SuburbList from '../components/SuburbList';
+import { ThreeDot } from 'react-loading-indicators'; 
 
 function Dashboard() {
     const [suburbs, setSuburbs] = useState([]);
@@ -11,6 +12,7 @@ function Dashboard() {
     const [dateFrom, setDateFrom] = useState("");
     const [searchSpeeding, setSearchSpeeding] = useState("");
     const [cameraTypes, setCameraTypes] = useState([]);
+    const [loading, setLoading] = useState(false);
 
 
     useEffect(() => {
@@ -31,6 +33,7 @@ function Dashboard() {
      */
     const suburbSelect = async (suburb) => {
         setSelectedSuburb(suburb);
+        setLoading(true);
         if (suburb) {
             try {
                 //Fetch first suburb details 
@@ -58,6 +61,7 @@ function Dashboard() {
         else {
             setSuburbDetails([]);
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -110,43 +114,48 @@ function Dashboard() {
                 </div>
             </div>
 
-            <div className="p-4">
-                <table className="table">
+            {loading ? (
+                <div><ThreeDot variant="bounce" color="#32cd32" size="medium" text="loading" textColor="" /></div>
+            ) : (
 
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Location ID</th>
-                            <th>Suburb</th>
-                            <th>Camera Type</th>
-                            <th>Rd Name</th>
-                            <th>Offences</th>
-                            <th>Rejected Expiations</th>
-                            <th>Compliance Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {suburbDetails.map((d, index) => (
-                            <tr key={index}>
-                                <th>
-                                    <input className="form-check-input"
-                                        type="checkbox" value=""
-                                        checked={isSelected(index)}
-                                        onChange={() => selectedLocationsChange(index)}
-                                        disabled={!isSelected(index) && selectedLocations.length >= maxSelections} />
-                                </th>
-                                <td>{d.locationId}</td>
-                                <td>{d.suburb}</td>
-                                <td>{d.cameraType1}</td>
-                                <td>{d.roadName}, {d.roadType}</td>
-                                <td>{d.expiationStats?.totalOffencesCount || "N/A"}</td>
-                                <td>10</td>
-                                <td>Warning</td>
+                <div className="p-4">
+                    <table className="table">
+
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Location ID</th>
+                                <th>Suburb</th>
+                                <th>Camera Type</th>
+                                <th>Rd Name</th>
+                                <th>Offences</th>
+                                <th>Rejected Expiations</th>
+                                <th>Compliance Status</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {suburbDetails.map((d, index) => (
+                                <tr key={index}>
+                                    <th>
+                                        <input className="form-check-input"
+                                            type="checkbox" value=""
+                                            checked={isSelected(index)}
+                                            onChange={() => selectedLocationsChange(index)}
+                                            disabled={!isSelected(index) && selectedLocations.length >= maxSelections} />
+                                    </th>
+                                    <td>{d.locationId}</td>
+                                    <td>{d.suburb}</td>
+                                    <td>{d.cameraTypeCode}</td>
+                                    <td>{d.roadName}, {d.roadType}</td>
+                                    <td>{d.expiationStats?.totalOffencesCount || "N/A"}</td>
+                                    <td>10</td>
+                                    <td>Warning</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 }
