@@ -57,30 +57,30 @@ function Dashboard() {
      */
     const suburbSelect = async (suburb) => {
         setLoading(true);
-        
-            try {
-                //Fetch first suburb details 
-                const response1 = await fetch(`http://localhost:5147/api/Get_ListCamerasInSuburb?suburb=${suburb}&cameraIdsOnly=false`);
-                const suburbsData = await response1.json();
 
-                // Then fetch expiation Stats by the loc.ID and cam.typeCode,getting this details from first fetch 
-                const expSubPromises = suburbsData.map(async (detail) => {
-                    const { locationId, cameraTypeCode } = detail;
-                    const response2 = await fetch(`http://localhost:5147/api/Get_ExpiationStatsForLocationId?locationId=${locationId}&cameraTypeCode=${cameraTypeCode}&startTime=0&endTime=2147483647`)
-                    const expiationStats = await response2.json();
-                    // Merge fetched data from response1 and response2
-                    return { ...detail, expiationStats };
-                });
+        try {
+            //Fetch first suburb details 
+            const response1 = await fetch(`http://localhost:5147/api/Get_ListCamerasInSuburb?suburb=${suburb}&cameraIdsOnly=false`);
+            const suburbsData = await response1.json();
 
-                // wait for data fetches and then update sub with details with expiation stats 
-                const updateLocationDetails = await Promise.all(expSubPromises);
-                setSuburbDetails(updateLocationDetails);
-                setFilteredSubDetails(updateLocationDetails);
-            } catch (err) {
-                console.log(err);
-            };
+            // Then fetch expiation Stats by the loc.ID and cam.typeCode,getting this details from first fetch 
+            const expSubPromises = suburbsData.map(async (detail) => {
+                const { locationId, cameraTypeCode } = detail;
+                const response2 = await fetch(`http://localhost:5147/api/Get_ExpiationStatsForLocationId?locationId=${locationId}&cameraTypeCode=${cameraTypeCode}&startTime=0&endTime=2147483647`)
+                const expiationStats = await response2.json();
+                // Merge fetched data from response1 and response2
+                return { ...detail, expiationStats };
+            });
 
-       
+            // wait for data fetches and then update sub with details with expiation stats 
+            const updateLocationDetails = await Promise.all(expSubPromises);
+            setSuburbDetails(updateLocationDetails);
+            setFilteredSubDetails(updateLocationDetails);
+        } catch (err) {
+            console.log(err);
+        };
+
+
         setLoading(false);
     };
 
@@ -116,7 +116,7 @@ function Dashboard() {
 
 
     return (
-        <div>
+        <div className="container">
             <h2>Dashboard</h2>
             <div className="filters row justify-content-end p-4 mb-4">
                 <div className="col-2">
@@ -147,37 +147,37 @@ function Dashboard() {
             ) : (
 
                 <div className="p-4">
-                    <table className="table">
+                    <table className="table table-striped">
 
                         <thead>
                             <tr>
-                                <th>Select</th>
-                                <th>Location ID</th>
-                                <th>Suburb</th>
-                                <th>Camera Type</th>
-                                <th>Rd Name</th>
-                                <th>Offences</th>
-                                <th>Rejected Expiations</th>
-                                <th>Compliance Status</th>
+                                <th style={{ width: '5%' }}>Select</th>
+                                <th style={{ width: '10%', textAlign: 'center', paddingLeft: '15px' }}>Location ID</th>
+                                <th style={{ paddingLeft: '30px' }}>Suburb</th>
+                                <th style={{ textAlign: 'center' }}>Camera Type</th>
+                                <th style={{ paddingLeft: '70px' }}>Rd Name</th>
+                                <th style={{width: '17%', textAlign: 'right' }}>Offences</th>
+                                <th style={{ textAlign: 'right' }}>Rej. Expiations</th>
+                                <th style={{ textAlign: 'center', paddingLeft: '35px' }}>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredSubDetails.map((d, index) => (
                                 <tr key={index}>
-                                    <th>
+                                    <td style={{ width: '5%', textAlign: 'center' }}>
                                         <input className="form-check-input"
                                             type="checkbox" value=""
                                             checked={isSelected(index)}
                                             onChange={() => selectedLocationsChange(index)}
                                             disabled={!isSelected(index) && selectedLocations.length >= maxSelections} />
-                                    </th>
-                                    <td>{d.locationId}</td>
-                                    <td>{d.suburb}</td>
-                                    <td>{d.cameraType1}</td>
-                                    <td>{d.roadName}, {d.roadType}</td>
-                                    <td>{d.expiationStats?.totalOffencesCount || "N/A"}</td>
-                                    <td>10</td>
-                                    <td>Warning</td>
+                                    </td>
+                                    <td style={{ width: '10%', textAlign: 'center', paddingRight: '45px' }}>{d.locationId}</td>
+                                    <td style={{ width: '15%', paddingLeft: '30px' }}>{d.suburb}</td>
+                                    <td style={{ width: '15%', paddingLeft: '30px' }}>{d.cameraType1}</td>
+                                    <td style={{ width: '23%', paddingLeft: '40px' }}>{d.roadName}, {d.roadType}</td>
+                                    <td style={{ textAlign: 'center', paddingRight: '50px' }}>{d.expiationStats?.totalOffencesCount || "N/A"}</td>
+                                    <td style={{ textAlign: 'center', paddingRight:'35px'}}>10</td>
+                                    <td style={{ textAlign: 'center', paddingLeft: '35px' }}>Warning</td>
                                 </tr>
                             ))}
                         </tbody>

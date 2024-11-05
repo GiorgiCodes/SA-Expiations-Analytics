@@ -58,6 +58,44 @@ body{
     font-size: 20px;
 }
 
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 0 150px #61dafb; 
+    border-radius: 15px;
+    overflow:hidden;
+    
+}
+
+.table thead th, .table tbody td {
+    position: sticky;
+    z-index: 1;
+    height: 60px;
+    padding: 5px;
+    text-align: left;
+    /* white-space:nowrap;*/
+}
+.table thead th {
+    padding: 10px 5px 2px 15px;
+    vertical-align: top;
+    background-color:lightblue;     
+   
+}
+
+.table tbody{
+    display: block;
+    max-height:550px;
+    overflow-y:auto;
+}
+
+.table thead, .table tbody tr{
+    display:table;
+    table-layout:fixed;
+    width:100%;
+    
+}
+
+
 
 
 
