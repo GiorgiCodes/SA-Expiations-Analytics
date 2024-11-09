@@ -13,9 +13,11 @@ function Dashboard() {
     const [selectedSuburb, setSelectedSuburb] = useState("");
     const [dateTo, setDateTo] = useState("");
     const [dateFrom, setDateFrom] = useState("");
-    const [searchSpeeding, setSearchSpeeding] = useState("");
+    const [speedingDescription, setSpeedingDescription] = useState("");
+    const [selectedOffenceCode, setSelectedOffenceCode] = useState("");
     const [selectedCameraType, setSelectedCameraType] = useState("");
     const [loading, setLoading] = useState(false);
+    const [offences, setOffences] = useState([]);   
 
     // fetch initial list of suburbs when component mounts
     useEffect(() => {
@@ -30,15 +32,15 @@ function Dashboard() {
     //fetch suburb details when suburb is selected
     useEffect(() => {
         if (selectedSuburb) {
-            suburbSelect(selectedSuburb)
+            suburbSelect(selectedSuburb,selectedOffenceCode)
         }
-    }, [selectedSuburb]);
+    }, [selectedSuburb,selectedOffenceCode]);
 
     /**
      * if camera type is selected, then returns new filtered data
      * If camera type is not selected returns sub details
      * this allows to prevent re-rendering the page when camera type is changed and use existing suburbDetails
-     */    
+     */
     useEffect(() => {
         if (selectedCameraType) {
             const filteredData = suburbDetails.filter((c) => c.cameraTypeCode === selectedCameraType);
@@ -60,7 +62,7 @@ function Dashboard() {
      * https://www.pluralsight.com/resources/blog/guides/handling-nested-http-requests-using-the-fetch-api
      * https://rapidapi.com/guides/loading-state-react
      */
-    const suburbSelect = async (suburb) => {
+    const suburbSelect = async (suburb, searchBySpeed) => {
         // Delay loading indicator popping
         const delayIndicator = setTimeout(() => {
             setLoading(true);
@@ -73,9 +75,15 @@ function Dashboard() {
 
             // Then fetch expiation Stats by the loc.ID and cam.typeCode,getting this details from first fetch 
             const expSubPromises = suburbsData.map(async (detail) => {
-                const { locationId, cameraTypeCode } = detail;
-                const response2 = await fetch(`http://localhost:5147/api/Get_ExpiationStatsForLocationId?locationId=${locationId}&cameraTypeCode=${cameraTypeCode}&startTime=0&endTime=2147483647`)
+                const { locationId, cameraTypeCode } = detail;       
+
+                let apiUrl = `http://localhost:5147/api/Get_ExpiationStatsForLocationId?locationId=${locationId}&cameraTypeCode=${cameraTypeCode}&startTime=0&endTime=2147483647`;
+                if (searchBySpeed) {
+                    apiUrl += `&offenceCodes=${searchBySpeed}`;
+                }
+                const response2 = await fetch(apiUrl);
                 const expiationStats = await response2.json();
+                
                 // Merge fetched data from response1 and response2
                 return { ...detail, expiationStats };
             });
@@ -92,16 +100,19 @@ function Dashboard() {
         setLoading(false);
     };
 
+
     //Reset seleccted checkboxes(locations) when selected suburb change
     useEffect(() => {
         setSelectedLocations([]);
     }, [suburbDetails, selectedCameraType]);
 
 
+    //function returns boolean whether the index of location is found in selectedLocations array.
+    //selectedLocations stores selected locations(checkbox) by user
     const isSelected = (index) => selectedLocations.includes(index);
 
     /**
-     * Reference  for multiselected checkboxes to restric user select only 2 locations
+     * Reference  for multiselected checkboxes to restrict user select only 2 locations
      * https://www.freecodecamp.org/news/how-to-work-with-multiple-checkboxes-in-react/
      * https://altcademy.com/blog/how-to-select-only-one-checkbox-in-a-group-using-reactjs-component/
      * https://stackoverflow.com/questions/65612615/limit-reactjs-input-element-of-type-checkbox-to-2-checked-while-using-usestate-a
@@ -121,15 +132,46 @@ function Dashboard() {
     };
 
 
+    useEffect(() => {
+        if (speedingDescription) {
+            fetch(`http://localhost:5147/api/Get_SearchOffencesByDescription?searchTerm=${speedingDescription}&offenceCodesOnly=false`)
+                .then(response => response.json())
+                .then(data => setOffences(data))
+                .catch(error => console.log(error));
+
+        }
+    }, [speedingDescription]);
+
+    const SearchChange = (e) => {
+        let description = e.target.value;
+        setSpeedingDescription(description);
+
+        const selectedOffence = offences.find (
+            (offence) => offence.description === description
+        );
+
+        if (selectedOffence) {
+            setSelectedOffenceCode(selectedOffence.offenceCode);
+        } else {
+            setSelectedOffenceCode("");
+        }
+    };
 
 
     return (
         <div className="container">
             <h2>Dashboard</h2>
             <div className="filters row justify-content-end p-4 mb-4">
-                <div className="col-2">
-                    <input type="text" placeholder="Search by Speeding" className="searchSpeeding form-control">
-                    </input>
+                <div className="col-4">
+                    <input list="speedingDescription" type="text" name="searchText" value={ speedingDescription} onChange={SearchChange} placeholder="Search by Speeding" className="searchSpeeding form-control" />
+                    <datalist id="speedingDescription">
+                        {offences.length > 0 && offences.map((offence, index) => (
+                            <option
+                                key={index}
+                                value={offence.description}>{ offence.description}</option>                     
+                        ))}
+                    </datalist>
+
                 </div>
 
                 <div className="col-2">
@@ -138,7 +180,7 @@ function Dashboard() {
 
                 <div className="col-2">
                     {/* Display SuburbList in the dashboard */}
-                    <SuburbList suburbs={suburbs} onSelectSuburb={suburbSelect} />
+                    <SuburbList suburbs={suburbs} onSelectSuburb={setSelectedSuburb} />
                 </div>
 
                 <div className="col-2">
@@ -166,7 +208,7 @@ function Dashboard() {
                                     <th style={{ textAlign: 'center' }}>Camera Type</th>
                                     <th style={{ paddingLeft: '70px' }}>Rd Name</th>
                                     <th style={{ width: '17%', textAlign: 'right' }}>Offences</th>
-                                    <th style={{ textAlign: 'right' }}>Rej. Expiations</th>
+                                    <th style={{ textAlign: 'right' }}>Speeding</th>
                                     <th style={{ textAlign: 'center', paddingLeft: '35px' }}>Status</th>
                                 </tr>
                             </thead>
