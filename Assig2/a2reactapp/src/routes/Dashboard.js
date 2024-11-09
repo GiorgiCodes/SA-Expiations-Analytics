@@ -131,7 +131,7 @@ function Dashboard() {
         });
     };
 
-
+    //Fetch offences based on speeding inputValue
     useEffect(() => {
         if (speedingDescription) {
             fetch(`http://localhost:5147/api/Get_SearchOffencesByDescription?searchTerm=${speedingDescription}&offenceCodesOnly=false`)
@@ -142,12 +142,16 @@ function Dashboard() {
         }
     }, [speedingDescription]);
 
+    //Sets speeding inputValue and immediately checks if it maches offence descriptio. 
+    //If so, found offence updates SelectedOffenceCode which then triggers table update
     const SearchChange = (e) => {
-        let description = e.target.value;
-        setSpeedingDescription(description);
+        let inputValue = e.target.value;
+        setSpeedingDescription(inputValue);
+
+        const [offenceCode] = inputValue.split('-').map((item) => item.trim());
 
         const selectedOffence = offences.find (
-            (offence) => offence.description === description
+            (offence) => offence.offenceCode === offenceCode
         );
 
         if (selectedOffence) {
@@ -168,7 +172,7 @@ function Dashboard() {
                         {offences.length > 0 && offences.map((offence, index) => (
                             <option
                                 key={index}
-                                value={offence.description}>{ offence.description}</option>                     
+                                value={`${offence.offenceCode}-${offence.description}`}/>                     
                         ))}
                     </datalist>
 
