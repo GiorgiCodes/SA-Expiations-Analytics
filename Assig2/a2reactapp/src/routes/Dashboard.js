@@ -12,12 +12,14 @@ function Dashboard() {
     const maxSelections = 2;
     const [selectedSuburb, setSelectedSuburb] = useState("");
     const [dateTo, setDateTo] = useState("");
-    const [dateFrom, setDateFrom] = useState("");
+    const today = new Date().toString().split("T")[0];
+    const [dateFrom, setDateFrom] = useState("2024-01-01");
     const [speedingDescription, setSpeedingDescription] = useState("");
     const [selectedOffenceCode, setSelectedOffenceCode] = useState("");
     const [selectedCameraType, setSelectedCameraType] = useState("");
     const [loading, setLoading] = useState(false);
-    const [offences, setOffences] = useState([]);   
+    const [offences, setOffences] = useState([]);
+
 
     // fetch initial list of suburbs when component mounts
     useEffect(() => {
@@ -32,9 +34,9 @@ function Dashboard() {
     //fetch suburb details when suburb is selected
     useEffect(() => {
         if (selectedSuburb) {
-            suburbSelect(selectedSuburb,selectedOffenceCode)
+            suburbSelect(selectedSuburb, selectedOffenceCode)
         }
-    }, [selectedSuburb,selectedOffenceCode]);
+    }, [selectedSuburb, selectedOffenceCode, dateFrom, dateTo]);
 
     /**
      * if camera type is selected, then returns new filtered data
@@ -63,6 +65,9 @@ function Dashboard() {
      * https://rapidapi.com/guides/loading-state-react
      */
     const suburbSelect = async (suburb, searchBySpeed) => {
+
+        const startTime = dateFrom ? Math.floor(new Date(dateFrom).getTime() / 1000) : 0;
+        const endTime = dateTo ? Math.floor(new Date(dateTo).getTime() / 1000) : 2147483647;
         // Delay loading indicator popping
         const delayIndicator = setTimeout(() => {
             setLoading(true);
@@ -75,15 +80,15 @@ function Dashboard() {
 
             // Then fetch expiation Stats by the loc.ID and cam.typeCode,getting this details from first fetch 
             const expSubPromises = suburbsData.map(async (detail) => {
-                const { locationId, cameraTypeCode } = detail;       
+                const { locationId, cameraTypeCode } = detail;
 
-                let apiUrl = `http://localhost:5147/api/Get_ExpiationStatsForLocationId?locationId=${locationId}&cameraTypeCode=${cameraTypeCode}&startTime=0&endTime=2147483647`;
+                let apiUrl = `http://localhost:5147/api/Get_ExpiationStatsForLocationId?locationId=${locationId}&cameraTypeCode=${cameraTypeCode}&startTime=${startTime}&endTime=${endTime}`;
                 if (searchBySpeed) {
                     apiUrl += `&offenceCodes=${searchBySpeed}`;
                 }
                 const response2 = await fetch(apiUrl);
                 const expiationStats = await response2.json();
-                
+
                 // Merge fetched data from response1 and response2
                 return { ...detail, expiationStats };
             });
@@ -148,9 +153,10 @@ function Dashboard() {
         let inputValue = e.target.value;
         setSpeedingDescription(inputValue);
 
+        //get offence code from the speeding search input
         const [offenceCode] = inputValue.split('-').map((item) => item.trim());
 
-        const selectedOffence = offences.find (
+        const selectedOffence = offences.find(
             (offence) => offence.offenceCode === offenceCode
         );
 
@@ -161,18 +167,46 @@ function Dashboard() {
         }
     };
 
+    
+    //handle Date To date change
+    const dateToChange = (e) => {
+        const newDateTo = e.target.value;
+        if (newDateTo > today) {
+            alert("Date cannot be later than today")
+            return;
+        }
+        if (newDateTo < dateFrom) {
+            alert("Date To cannot be earlier than Date From")
+            return;
+        }
+        setDateTo(newDateTo);
+    }
+
+    //handle Date From date change
+    const dateFromChange = (e) => {
+        const newDateFrom = e.target.value;
+        if (newDateFrom > today) {
+            alert("Date From cannot be later than today")
+            return;
+        }
+        if (newDateFrom > dateTo) {
+            alert("Date From cannot be later than Date To")
+            return;
+        }
+        setDateFrom(newDateFrom);
+    };
 
     return (
         <div className="container">
             <h2>Dashboard</h2>
             <div className="filters row justify-content-end p-4 mb-4">
                 <div className="col-4">
-                    <input list="speedingDescription" type="text" name="searchText" value={ speedingDescription} onChange={SearchChange} placeholder="Search by Speeding" className="searchSpeeding form-control" />
+                    <input list="speedingDescription" type="text" name="searchText" value={speedingDescription} onChange={SearchChange} placeholder="Search by Speeding" className="searchSpeeding form-control" />
                     <datalist id="speedingDescription">
                         {offences.length > 0 && offences.map((offence, index) => (
                             <option
                                 key={index}
-                                value={`${offence.offenceCode}-${offence.description}`}/>                     
+                                value={`${offence.offenceCode}-${offence.description}`} />
                         ))}
                     </datalist>
 
@@ -188,10 +222,10 @@ function Dashboard() {
                 </div>
 
                 <div className="col-2">
-                    <input type="date" className="dateFrom form-control" />
+                    <input type="date" className="dateFrom form-control" value={dateFrom} onChange={dateFromChange} />
                 </div>
                 <div className="col-2">
-                    <input type="date" className="dateTo form-control" />
+                    <input type="date" className="dateTo form-control" onChange={dateToChange} />
                 </div>
             </div>
 
