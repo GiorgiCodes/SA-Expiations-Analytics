@@ -8,6 +8,7 @@ import Privacy from './routes/Privacy';
 import About from './routes/About';
 import Home from './routes/Home';
 import Dashboard from './routes/Dashboard';
+import Report from './routes/Report';
 import Login from './components/Login';
 import AuthRoute from './routes/AuthRoute';
 
@@ -23,6 +24,7 @@ root.render(
                     <Route path="Privacy" element={<AuthRoute><Privacy /></AuthRoute>} />
                     <Route path="About" element={<AuthRoute><About /></AuthRoute>} />
                     <Route path="Dashboard" element={<AuthRoute><Dashboard /></AuthRoute>} />
+                    <Route path="Report" element={<AuthRoute><Report /></AuthRoute>} />
                     <Route path="" element={<Login />} /> {/**route when URL is localhost: [port] */}
                     <Route path="*" element={<Login />} />{/**route matches anything */}
                     <Route path="Login" element={<Login />} />

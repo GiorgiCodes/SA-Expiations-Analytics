@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import SuburbList from '../components/SuburbList';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { ThreeDot } from 'react-loading-indicators';
 import CameraTypeList from '../components/CameraTypesList';
 
@@ -19,6 +20,7 @@ function Dashboard() {
     const [selectedCameraType, setSelectedCameraType] = useState("");
     const [loading, setLoading] = useState(false);
     const [offences, setOffences] = useState([]);
+    const navigate = useNavigate();
 
 
     // fetch initial list of suburbs when component mounts
@@ -33,7 +35,7 @@ function Dashboard() {
 
     //fetch suburb details when suburb is selected
     useEffect(() => {
-        if (selectedSuburb && selectedSuburb !=="Default") {
+        if (selectedSuburb && selectedSuburb !== "Default") {
             suburbSelect(selectedSuburb, selectedOffenceCode)
         }
     }, [selectedSuburb, selectedOffenceCode, dateFrom, dateTo]);
@@ -196,6 +198,13 @@ function Dashboard() {
         setDateFrom(newDateFrom);
     };
 
+    function generateReport() {
+        if (selectedLocations.length == maxSelections) {
+            navigate("/Report")
+        }
+        
+    };
+
     return (
         <div className="container">
             <h2>Dashboard</h2>
@@ -228,12 +237,15 @@ function Dashboard() {
                     <input type="date" className="dateTo form-control" onChange={dateToChange} />
                 </div>
             </div>
+            <div className="col-2 ms-4">
+                <button type="button" onClick={generateReport}  className="form-control">View Report</button>
+            </div>
 
-            {/*Loading indicator animation*/}          
+            {/*Loading indicator animation*/}
             {/*If suburb is not selected show show filters and message Select suburb*/}
             {loading ? (
                 <div><ThreeDot variant="bounce" color="#32cd32" speedPlus="0" size="medium" text="loading" textColor="" /></div>
-            ) : !selectedSuburb || selectedSuburb ==="Default" ? (
+            ) : !selectedSuburb || selectedSuburb === "Default" ? (
                 <p>Select Suburb</p>
             ) : (
                 //Table is displayed if there are locations after filtering otherwise shows message "The location could not find"
