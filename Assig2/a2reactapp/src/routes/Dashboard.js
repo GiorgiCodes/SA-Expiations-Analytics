@@ -116,6 +116,7 @@ function Dashboard() {
             });
 
             // wait for data fetches and then update sub with details with expiation stats 
+            //https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises
             const updateLocationDetails = await Promise.all(expSubPromises);
             setSuburbDetails(updateLocationDetails);
             setFilteredSubDetails(updateLocationDetails);
@@ -220,6 +221,8 @@ function Dashboard() {
     function generateReport() {
         if (selectedLocations.length == maxSelections) {
             navigate("/Report")
+        } else {
+            alert("Select 2 locations to generate the reprot")
         }
         
     };
