@@ -1,9 +1,10 @@
-﻿
+﻿import { FaRegCopyright } from "react-icons/fa6";
+
 
 function Footer() {
     return (
         <footer className="py-1 text-center">        
-            <p>2024 University of South Austraili. All rights reserved.</p> 
+            <p>This work is licenced under a Creative Commons Attribution 4.0 Australia licence. <br /><FaRegCopyright />   South Australia Police, Government of South Australia 2021</p> 
         </footer>
     )
 }
