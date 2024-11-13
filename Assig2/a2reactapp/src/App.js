@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import SHA256 from 'crypto-js/sha256';
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
@@ -16,6 +16,7 @@ function App() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
+    const collapseRef = useRef(null);
 
     //current Nav button retains active after page refreshing
     const isActive = (path) => location.pathname === path ? 'active' : '';
@@ -29,6 +30,12 @@ function App() {
         navigate("./Login")
     }
 
+    const closeMenu = () => {
+        if (collapseRef.current) {
+            collapseRef.current.classList.remove('show');
+        }
+    };
+
     return (
         <div className="App">
             <nav className="navbar  p-4">
@@ -37,12 +44,12 @@ function App() {
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <Link className="navbar-brand" to="Home">Expiations SA</Link>
-                    <div className="navbar-collapse row collapse" id="navbarNavAltMarkup">
+                    <div className="navbar-collapse row collapse" id="navbarNavAltMarkup" ref={collapseRef }>
                         <div className="navbar-nav">
-                            <Link className={`nav-link ${isActive("/Home")}`} to="/Home">Home</Link>
-                            <Link className={`nav-link ${isActive("/About")}`} to="/About">About</Link>
-                            <Link className={`nav-link ${isActive("/Privacy")}`} to="/Privacy">Privacy</Link>
-                            <Link className={`nav-link ${isActive("/Dashboard")}`} to="/Dashboard">Dashboard</Link>
+                            <Link className={`nav-link ${isActive("/Home")}`} to="/Home" onClick={closeMenu }>Home</Link>
+                            <Link className={`nav-link ${isActive("/About")}`} to="/About" onClick={closeMenu}>About</Link>
+                            <Link className={`nav-link ${isActive("/Privacy")}`} to="/Privacy" onClick={closeMenu}>Privacy</Link>
+                            <Link className={`nav-link ${isActive("/Dashboard")}`} to="/Dashboard" onClick={closeMenu}>Dashboard</Link>
                         </div>
                     </div>
                     <div className="d-flex align-items-center ms-auto">
@@ -67,7 +74,7 @@ function App() {
             </nav>
             <div className="main-content">
             {/*Share name of username globally with children*/}
-                <Outlet context={{ user, setUser }} />
+                <Outlet context={{ user, setUser}} />
             </div>
             <Footer/>
         </div>
