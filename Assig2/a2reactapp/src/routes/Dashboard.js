@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import SuburbList from '../components/SuburbList';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ThreeDot } from 'react-loading-indicators';
 import CameraTypeList from '../components/CameraTypesList';
 
@@ -73,7 +73,7 @@ function Dashboard() {
 
         const startTime = dateFrom ? Math.floor(new Date(dateFrom).getTime() / 1000) : 0;
         const endTime = dateTo ? Math.floor(new Date(dateTo).getTime() / 1000) : 2147483647;
-       
+
         try {
             //Fetch first suburb details 
             const response1 = await fetch(`http://localhost:5147/api/Get_ListCamerasInSuburb?suburb=${suburb}&cameraIdsOnly=false`);
@@ -89,14 +89,14 @@ function Dashboard() {
                 //Fetch expiations stats. by location  date and offence codes are optional
                 let apiUrl = `http://localhost:5147/api/Get_ExpiationStatsForLocationId?locationId=${locationId}&cameraTypeCode=${cameraTypeCode}&startTime=${startTime}&endTime=${endTime}`;
                 if (searchBySpeed) {
-                    apiUrl += `&offenceCodes=${searchBySpeed}`;                   
+                    apiUrl += `&offenceCodes=${searchBySpeed}`;
                 }
                 const response2 = await fetch(apiUrl);
                 const expiationStats = await response2.json();
 
                 //Fetch expiations by location. date and offence codes are optional. Purpose of this fetching is to count rejected expiations for each location
                 let expUrl = `http://localhost:5147/api/Get_ExpiationsForLocationId?locationId=${locationId}&cameraTypeCode=${cameraTypeCode}&startTime=${startTime}&endTime=${endTime}`;
-                if (searchBySpeed) {                   
+                if (searchBySpeed) {
                     expUrl += `&offenceCodes=${searchBySpeed}`;
                 }
 
@@ -229,14 +229,14 @@ function Dashboard() {
             const selectedDetails = [{ locationId: 118, cameraTypeCode: "I/section", suburb: "Adelaide" },
             { locationId: 170, cameraTypeCode: "PAC", suburb: "Clovelly Park" }];
 
-            const filterSearchDetails = { selectedSuburb, selectedCameraType, speedingDescription,  dateFrom, dateTo };
-            
+            const filterSearchDetails = { selectedSuburb, selectedCameraType, speedingDescription, dateFrom, dateTo };
+
 
             navigate("/Report", { state: { selectedDetails, filterSearchDetails } });
         } else {
             alert("Select 2 locations to generate the reprot")
         }
-        
+
     };
 
     return (
@@ -271,8 +271,28 @@ function Dashboard() {
                     <input type="date" className="dateTo form-control" onChange={dateToChange} />
                 </div>
             </div>
-            <div className="col-2 ms-4">
-                <button type="button" onClick={generateReport}  className="form-control">View Report</button>
+            <div className="d-flex align-items-start gap-3">
+                <div className="col-2 ms-4">
+                    <button type="button" onClick={generateReport} className="form-control">View Report</button>
+                </div>
+
+                {selectedLocations.map((i) => {
+                    const detail = filteredSubDetails[i];
+                    return (
+                        <div key={i} className="d-flex align-items-center gap-1" style={{ backgroundColor: "white", borderRadius: "10px", marginTop:"7px"}} >
+                            <button type="button" key={i} className="btn-close" aria-label="Close" style={{ backgroundColor: "white"}}
+                                //remove location from selected locations
+                                onClick={() => {
+                                    setSelectedLocations((prevLocations) => prevLocations.filter((location) => location != i));
+                                }}
+                            ></button>
+                            <span className="me-2">
+                                ID-{detail.locationId}: {detail.suburb}, {detail.roadName}
+                            </span>
+                        </div>
+                    );
+                })
+                }
             </div>
 
             {/*Loading indicator animation*/}
@@ -314,14 +334,15 @@ function Dashboard() {
                                                 type="checkbox" value=""
                                                 checked={isSelected(index)}
                                                 onChange={() => selectedLocationsChange(index)}
-                                                disabled={!isSelected(index) && selectedLocations.length >= maxSelections} />
+                                                disabled={!isSelected(index) && selectedLocations.length >= maxSelections}
+                                            />
                                         </td>
                                         <td style={{ width: '10%', textAlign: 'center', paddingRight: '45px' }}>{d.locationId}</td>
                                         <td style={{ width: '15%', paddingLeft: '30px' }}>{d.suburb}</td>
                                         <td style={{ width: '15%', paddingLeft: '30px' }}>{d.cameraType1}</td>
                                         <td style={{ width: '23%', paddingLeft: '40px' }}>{d.roadName}, {d.roadType}</td>
                                         <td style={{ textAlign: 'center', paddingRight: '50px' }}>{d.expiationStats?.totalOffencesCount || "N/A"}</td>
-                                        <td style={{ textAlign: 'center', paddingRight: '35px' }}>{d.rejectedCount }</td>
+                                        <td style={{ textAlign: 'center', paddingRight: '35px' }}>{d.rejectedCount}</td>
                                         <td style={{ textAlign: 'center', paddingLeft: '35px' }}>Warning</td>
                                     </tr>
                                 ))}
