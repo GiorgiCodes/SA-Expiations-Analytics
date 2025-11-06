@@ -1,4 +1,4 @@
-# SA Expiations Analytics (Assig2 React App)
+# SA Expiations Analytics (React App)
 
 Interactive web app to explore and visualize South Australian expiation (demerit) data. Built with React, it enables authenticated users to filter by suburb, camera type, speeding offence, and date range, compare locations, and view insights like expiation totals, rejections, and weekday patterns.
 
